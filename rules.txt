@@ -1,0 +1,31 @@
+Requirments:
+
+1. Every node is either red or black.
+2. All null nodes are considered black.
+3. A red node does not have a red child.
+4. Every path from a given node to any of its leaf nodes (that is, to any descendant null node) goes through the same number of black nodes.
+5. (Conclusion) If a node N has exactly one child, the child must be red. If the child were black, its leaves would sit at a different black depth than N's null node (which is considered black by rule 2), violating requirement 4.
+
+
+
+
+Insert Cases
+
+Insert case 1
+The current node’s parent P is black, so requirement 3 holds. Requirement 4 holds also according to the loop invariant.
+
+Insert case 2
+If both the parent P and the uncle U are red, then both of them can be repainted black and the grandparent G becomes red for maintaining requirement 4. Since any path through the parent or uncle must pass through the grandparent, the number of black nodes on these paths has not changed. However, the grandparent G may now violate requirement 3, if it has a red parent. After relabeling G to N the loop invariant is fulfilled so that the rebalancing can be iterated on one black level (= 2 tree levels) higher.
+
+Insert case 3
+Insert case 2 has been executed (h-1)/2 times and the total height of the tree has increased by 1, now being h . The current node N is the (red) root of the tree, and all RB-properties are satisfied.
+
+Insert case 4
+The parent P is red and the root. Because N is also red, requirement 3 is violated. But after switching P’s color the tree is in RB-shape. The black height of the tree increases by 1.
+
+Insert case 5
+The parent P is red but the uncle U is black. The ultimate goal is to rotate the parent node P to the grandparent position, but this will not work if N is an "inner" grandchild of G (i.e., if N is the left child of the right child of G or the right child of the left child of G). A dir-rotation at P switches the roles of the current node N and its parent P. The rotation adds paths through N (those in the subtree labeled 2, see diagram) and removes paths through P (those in the subtree labeled 4). But both P and N are red, so requirement 4 is preserved. Requirement 3 is restored in case 6.
+
+
+Insert case 6
+The current node N is now certain to be an "outer" grandchild of G (left of left child or right of right child). Now (1-dir)-rotate at G, putting P in place of G and making P the parent of N and G. G is black and its former child P is red, since requirement 3 was violated. After switching the colors of P and G the resulting tree satisfies requirement 3. Requirement 4 also remains satisfied, since all paths that went through the black G now go through the black P.

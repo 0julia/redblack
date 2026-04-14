@@ -1,14 +1,15 @@
 #include <iostream>
 #include <cstring>
 #include <fstream>
+#include "node.h"
 using namespace std;
 
-struct Node{
+/*struct Node{
   Node* left=NULL;
   Node* right=NULL;
   int data;
   Node* parent=NULL;
-};
+  };*/
 
 void add(Node*& head, int info);
 void print(Node* head, int depth);
@@ -22,14 +23,14 @@ void case3(Node*& head, int info);
 void case4(Node*& head, int info);
 void case5(Node*& head, int info);
 void case6(Node*& head, int info);
-
+int whichCase(Node* head);
 
 
 int main(){
+  Node* head=NULL;
   fstream f("nums.txt");
   int fnum;
   bool done = false;
-  Node* head = NULL;
   
   do{ // keep going till quit
     string input;
@@ -65,6 +66,11 @@ int main(){
   f.close();
   return 0;
 }
+
+
+void case1(Node* head){
+}
+
 
 //deletes the stuff:
 void allDone(Node* head){
