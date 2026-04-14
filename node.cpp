@@ -8,7 +8,7 @@ Node::Node(){
   left=NULL;
   right=NULL;
   parent=NULL;
-  data;
+  data=0;
   type='\0'; // red/black
 
 }
