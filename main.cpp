@@ -67,8 +67,28 @@ int main(){
   return 0;
 }
 
+int whichCase(node* head, int data){
+  search()
+}
+
 
 void case1(Node* head){
+  if(!head){//at end of thread and its not there
+    cout << "Sorry, that number is not in the tree";
+    return NULL;
+  }
+  //if found, return it
+  if(head->data == query){
+    return head;
+  }else if(head->data > query){
+    //recursive
+    return search(head->left, query);
+  }else if(head->data < query){
+    return search(head->right, query);
+  }else{ // debug
+    cout <<"Problem!" << endl;
+  }
+  return;
 }
 
 
