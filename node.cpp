@@ -9,7 +9,7 @@ Node::Node(){
   right=NULL;
   parent=NULL;
   data=0;
-  type='\0'; // red/black
+  type='r'; // red/black
 
 }
 
