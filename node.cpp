@@ -9,8 +9,6 @@ Node::Node(int data, Node* parent, Node* left, Node* right){
   right=NULL;
   parent=NULL;
   data=0;
-
-  */
   type='r'; // red/black
 
 }

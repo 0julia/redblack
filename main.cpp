@@ -8,16 +8,17 @@ using namespace std;
 void add(Node*& head, int info);
 void print(Node* head, int depth);
 Node* search(Node* head, int query);
+Node* casesearch(Node* head, int query);
 void del(Node*& head, int info);
 Node* nextLargest(Node* head);
 void allDone(Node* head);
-void case1(Node*& head, int info);
+void case1(Node*& head, int info, Node* parent);
 void case2(Node*& head, int info);
 void case3(Node*& head, int info);
 void case4(Node*& head, int info);
 void case5(Node*& head, int info);
 void case6(Node*& head, int info);
-int whichCase(Node* head);
+Node* whichCase(Node* head, int info);
 
 
 int main(){
@@ -42,7 +43,8 @@ int main(){
 	}
 	cout <<endl;
       }else{
-	add(head,num);
+	head = whichCase(head,num);
+	cout << "Head: " << head->data << endl;
       }
       //search
     }else if(input == "print"){
@@ -61,26 +63,48 @@ int main(){
   return 0;
 }
 
-int whichCase(node* head, int data){
-  search()
-}
-
-
-void case1(Node* head){
-  if(!head){//at end of thread and its not there
-    cout << "Sorry, that number is not in the tree";
-    return NULL;
-  }
-  //if found, return it
-  if(head->data == query){
+Node* whichCase(Node* head, int data){
+  cout << "1" << endl;
+  
+  if(!head){
+    cout << "2" << endl;
+    case1(head,data, NULL);
+    cout << "6" << endl;
     return head;
-  }else if(head->data > query){
-    //recursive
-    return search(head->left, query);
-  }else if(head->data < query){
-    return search(head->right, query);
-  }else{ // debug
-    cout <<"Problem!" << endl;
+  }
+  Node* parent = search(head, data);
+  if (!parent){
+    cout << "prob line 78";
+    return NULL;
+  }else if(parent->type == 'b'){
+    case1(head, data, parent);
+    
+  }
+  return NULL;
+}
+  
+  
+void case1(Node*& head, int info, Node* parent){
+  cout << "3" << endl;
+  if(!head){//at end of thread and its not there
+    cout << "4" << endl;
+    head = new Node();
+    head->data=info;
+    head->type='b';
+    cout << "5" << endl;
+    return;
+  }
+
+  if(parent->type = 'r'){
+    cout << "Should be b";
+  }else if(parent->data < info){
+    head->left = new Node();
+    head->left->data = info;
+    head->left->parent = head;
+  }else if(parent->data > info){
+    head->right = new Node();
+    head->right->data = info;
+    head->right->parent = head;
   }
   return;
 }
@@ -106,6 +130,27 @@ Node* nextLargest(Node* head){
   
 
 
+Node* casesearch(Node* head, int info){ // returns where i
+  if(!head){//at end of thread and its not there
+    cout << "Sorry, that number is not in the tree";
+    return NULL;
+  }
+  //if found, return it
+  if(!head->left->data && head->data < info){
+    return head;
+  } else if(!head->right->data && head->data > info){
+    return head;
+  }else if(head->data > info){
+    //recursive
+    return casesearch(head->left, info);
+  }else if(head->data < info){
+    return casesearch(head->right, info);
+  }else{ // debug
+    cout <<"Problem!" << endl;
+  }
+  return NULL;
+}
+
 
 Node* search(Node* head, int query){
   if(!head){//at end of thread and its not there
@@ -127,70 +172,34 @@ Node* search(Node* head, int query){
 }
 
 
-void add(Node*& head, int info){
-  if (head == NULL) {
-    head = new Node{info, NULL, NULL, NULL};
-    return;
-  }
-
-  // Insert left
-  if (info < head->data) {
-    if (head->left == NULL) {
-      head->left = new Node{info, head, NULL, NULL};
-    } else {
-      add(head->left, info);
-    }
-    return;
-  }
-
-  // Insert right
-  if (info > head->data) {
-    if (head->right == NULL) {
-      head->right = new Node{info, head, NULL, NULL};
-        } else {
-      add(head->right, info);
-    }
-    return;
-    }
-  
-  // Duplicate value
-  cout << "problem";
-  /*
-  //add leafs
-  if (head == NULL){
-    Node* new_current = new Node();
-    head = new_current;
+void add(Node*& head, int info) {
+  //add leaf
+  if (head==NULL) {
+    head = new Node();
     head->data = info;
-    head->parent=NULL;
     return;
   }
-
-  //if input is less than head and at end, add 
-  if(head->data > info && head->left==NULL){
-    Node* new_current = new Node();
-    head->left=new_current;
-    new_current->data=info;
-    new_current->parent = head;
-    return;
-  }else if(head->data < info && head->right==NULL){
-  //if input is more than head and at end, add 
-    Node* new_current = new Node();
-    head->right=new_current;
-    new_current->data=info;
-    new_current->parent = head;
-    return;
-  }else if(head->data > info){
-  //if input is less than head and not at end
-    add(head->left, info);
-  }else if(head->data < info){
-    add(head->right, info);
-  }else{
-  //if input is more than head and not at end
-    cout<< "problem";
+  if (info < head->data) {
+    if (head->left==NULL) { // if input is less than head and at end, add
+      head->left = new Node();
+      head->left->data = info;
+      head->left->parent = head;
+    } else { 
+      add(head->left, info); // recursive
+    }
+  } else if (info > head->data) {
+    if (head->right==NULL) { //if input is bigger than head and at end, add
+      head->right = new Node();
+      head->right->data = info;
+      head->right->parent = head;
+    } else {
+      add(head->right, info); // recursive
+    }
+  } else {
+    cout << "problem";
   }
   */
 }
-
 
 void print(Node* current, int depth){
   if(current == NULL){ //if leaf, end that
@@ -201,6 +210,6 @@ void print(Node* current, int depth){
   for (int i = 0; i< depth; i++){
     cout << "   ";
   }
-  cout << current->data << endl;
+  cout << current->data << " "<< current->type << endl;
   print(current->left, depth+1);
 }
