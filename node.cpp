@@ -3,13 +3,15 @@
 #include "node.h"
 using namespace std;
 
-Node::Node(){
-
+Node::Node(int data, Node* parent, Node* left, Node* right){
+  /*
   left=NULL;
   right=NULL;
   parent=NULL;
   data=0;
-  type='\0'; // red/black
+
+  */
+  type='r'; // red/black
 
 }
 

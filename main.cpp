@@ -4,12 +4,6 @@
 #include "node.h"
 using namespace std;
 
-/*struct Node{
-  Node* left=NULL;
-  Node* right=NULL;
-  int data;
-  Node* parent=NULL;
-  };*/
 
 void add(Node*& head, int info);
 void print(Node* head, int depth);
@@ -134,6 +128,34 @@ Node* search(Node* head, int query){
 
 
 void add(Node*& head, int info){
+  if (head == NULL) {
+    head = new Node{info, NULL, NULL, NULL};
+    return;
+  }
+
+  // Insert left
+  if (info < head->data) {
+    if (head->left == NULL) {
+      head->left = new Node{info, head, NULL, NULL};
+    } else {
+      add(head->left, info);
+    }
+    return;
+  }
+
+  // Insert right
+  if (info > head->data) {
+    if (head->right == NULL) {
+      head->right = new Node{info, head, NULL, NULL};
+        } else {
+      add(head->right, info);
+    }
+    return;
+    }
+  
+  // Duplicate value
+  cout << "problem";
+  /*
   //add leafs
   if (head == NULL){
     Node* new_current = new Node();
@@ -142,6 +164,7 @@ void add(Node*& head, int info){
     head->parent=NULL;
     return;
   }
+
   //if input is less than head and at end, add 
   if(head->data > info && head->left==NULL){
     Node* new_current = new Node();
@@ -165,6 +188,7 @@ void add(Node*& head, int info){
   //if input is more than head and not at end
     cout<< "problem";
   }
+  */
 }
 
 
