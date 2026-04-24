@@ -12,7 +12,8 @@ Node* uncle(Node* current);
 //void del(Node*& head, int info);
 void allDone(Node* head);
 void whichCase(Node* current, Node*& head);
-void rotate(Node* current, Node*& head);
+void lrotate(Node*& current, Node*& head);
+void rrotate(Node*& current, Node*& head);
 
 
 int main(){
@@ -23,32 +24,33 @@ int main(){
   
   do{ // keep going till quit
     string input;
-    cout << "What would you like to do?(add, print, quit) ";//search, delete, print, quit) ";
-    cin >> input;
+    //cout << "What would you like to do?(add, print, quit) ";//search, delete, print, quit) ";
+    //cin >> input;
 
-    if(input == "add"){
+    //if(input == "add"){
       //ask input
       cout << "input a number to add please (If you would like to input a file type '0') ";
       int num;
       cin >> num;
       if (num == 0){
-	while (f >> fnum){
+	print(head,0);
+	/*while (f >> fnum){
 	  add(head, head, fnum);
-	}
+	  }*/
 	cout <<endl;
       }else{
 	add(head, head, num);
       }
       if (head != NULL){head->type='b';}//double check that head is black
       //search
-    }else if(input == "print"){
+      /*}else if(input == "print"){
       print(head, 0);
     }else if(input == "quit"){
       //leave
       done=true;
     }else{
       cout<<"Sorry, that was an invalid command" << endl;
-    }
+      }*/
     cout << endl;
   }while(done==false);
   
@@ -78,34 +80,58 @@ int main(){
 //should it have a return type
 void whichCase(Node* current, Node*& head){
   //cout << "parent: " << current->parent->data << " " << current->parent->type << endl << "Current: " << current->data << " " << current->type << endl;
-  cout << "1" << endl;
   if(head==NULL){return;}
-  cout << "2" << endl;
   if(current->parent==NULL){return;}
-  cout << "3" << endl;
   if(current->parent->type == 'b'){return;}
-  cout << "4" << endl;
 
   Node* unc = uncle(current);
-  if(unc->type == 'r'){
-    unc->parent->type = 'r';
+  if(unc != NULL && unc->type == 'r'){
     current->parent->type = 'b';
     unc->type = 'b';
-    current->type = 'r';
-    whichCase(unc->parent, head);//put at end?
+    current->parent->parent->type = 'r';
+    //current->type = 'r';
+    whichCase(current->parent->parent, head);//put at end?
   }else{
-    //LL or LR or RR or RL
+    cout <<"1"<< endl;
+    if(!uncle(current)||current->parent->data < uncle(current)->data){ //left child
+      lrotate(current, head);//LL or LR
+    }
   }
   return;
 }
 
-void rotate(Node* current, Node*& head){
+void lrotate(Node*& current, Node*& head){
+  cout <<"2"<< endl;
   if (!current->parent->parent){cout << "rotate error" << endl; return;}
-  
-  if(current->parent < uncle(current)){ //left child
+  cout <<"3"<< endl;
+  Node* gpa = current->parent->parent;
+  if(!uncle(current)||current->parent->data < uncle(current)->data){ //left child
+    cout <<"4"<< endl;
+    Node* rightChild= current->parent->right;
+    current->parent->parent=gpa->parent;
+    current->parent->right=gpa;
+    gpa->left=rightChild;
+    gpa->parent = current->parent;
+    char temp = gpa->type;
+    gpa->type=current->parent->type;
+    current->parent->type=temp;
     
-  }else if(current->parent > uncle(current)){ //right child
-    
+    if(head==gpa){
+      head=current->parent;
+    }
+    //move parent to grandparent spot
+  }
+}
+
+void rrotate(Node*& current, Node*& head){
+  cout <<"2"<< endl;
+  if (!current->parent->parent){cout << "rotate error" << endl; return;}
+  cout <<"3"<< endl;
+  Node* gpa = current->parent->parent;
+  if(current==current->parent->right){//RR rotation
+    //move parent to grandparent spot
+  }else{//RL rotation
+    //switch child and parent then RR
   }
 }
 
