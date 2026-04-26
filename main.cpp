@@ -65,8 +65,7 @@ void whichCase(Node* current, Node*& head){
   if(head==NULL){return;}
   if(current->parent==NULL){return;}
   if(current->parent->type == 'b'){return;}
-  cout << "-2 "<<endl;
-
+  cout << "-2 "<<endl<<endl;
   Node* unc = uncle(current);
   if(unc != NULL && unc->type == 'r'){
     current->parent->type = 'b';
@@ -77,14 +76,17 @@ void whichCase(Node* current, Node*& head){
   }else{
     cout << "-1 "<<endl;
     //if uncle is black or null...
-    if(!uncle(current)||current->parent->data < uncle(current)->data){ // and left child...
+    if(current->parent->data < current->parent->parent->data){ // and left child...
+      cout << "8"<<endl;
       current=lrotate(current, head);//rotate LL or LR
+      cout << "9"<<endl;
     }
-    if(!uncle(current)||current->parent->data > uncle(current)->data){ // and right child...
-      cout << "0 "<<endl;
+    if(current->parent->data > current->parent->parent->data){ // and right child...
+      cout << "0 "<<endl<<endl;
       current=rrotate(current, head);//rotate RR or RL
     }
   }
+  cout << "10"<<endl;
   return;
 }
 
@@ -142,11 +144,14 @@ Node* rrotate(Node* current, Node*& head){
 }
 
 Node* lrotate(Node* current, Node*& head){
+  cout << "0"<<endl;
   if (!current || !current->parent || !current->parent->parent){cout << "rotate error" << endl; return NULL;}
   Node* temp = current;
   Node* gpa = current->parent->parent;
-  
+  cout << "1"<<endl;
+
   if(current->parent->data > current->data){ //left grandchild 
+    cout << "2"<<endl;
     current=current->parent;
     Node* rightChild = current->right;
     Node* parentPointer = current->parent->parent;
@@ -158,23 +163,28 @@ Node* lrotate(Node* current, Node*& head){
     }else{
       parentPointer->left=current;
     }
+    cout << "3"<<endl;
     gpa->left=current->right;
     gpa->parent=current;
     current->right=gpa;
     char temp = gpa->type;
     gpa->type=current->type;
     current->type=temp;
+    cout << "4"<<endl;
     return current;
   }else{//LR situation
+    cout << "5"<<endl;
     current=temp->parent;
     //set g-pa and parent pointing to each other
     gpa->left=temp;
     temp->parent=gpa;
     //set child and parent pointing to each other
+    cout << "6"<<endl;
     Node* child1 = temp->left;
     temp->left=current;
     current->right=child1;
     current->parent=temp;
+    cout << "7"<<endl;
     return lrotate(current,head);
   }
   return NULL;
