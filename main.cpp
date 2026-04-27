@@ -72,7 +72,6 @@ void whichCase(Node* current, Node*& head){
     //if uncle is black or null...
     if(current->parent->data < current->parent->parent->data){ // and left child...
       current=lrotate(current, head);//rotate LL or LR
-      print(head,0);
     } else if(current->parent->data > current->parent->parent->data){ // and right child...
       current=rrotate(current, head);//rotate RR or RL
     }
@@ -89,11 +88,11 @@ Node* rrotate(Node* current, Node*& head){
     Node* leftChild = current->left;
     Node* parentPointer = gpa->parent;
     current->parent=parentPointer;
-    //current->right=temp;
-    //temp->parent=current;
-    if (parentPointer){//head==gpa){
-      if(parentPointer->left==gpa){
-	parentPointer->left=current;
+    if(!parentPointer){
+      head=current;
+    }else{
+      if(current->data < current->parent->data){
+	parentPointer->left=current;//I FEEL LIKE THIS IS WRO
       }else{
 	parentPointer->right=current;
       }
@@ -103,9 +102,6 @@ Node* rrotate(Node* current, Node*& head){
     gpa->right=leftChild;//current->left;
     if(leftChild !=NULL){
       leftChild->parent=gpa;
-    }
-    if(head=gpa){
-      head=current;
     }
     char temp = gpa->type;
     gpa->type=current->type;
@@ -140,7 +136,11 @@ Node* lrotate(Node* current, Node*& head){
     if (head==gpa){
       head=current;
     }else{
-      parentPointer->right=current;
+      if(current->data < current->parent->data){
+	parentPointer->left=current;//I FEEL LIKE THIS IS WRO
+      }else{
+	parentPointer->right=current;
+      }
     }
     gpa->left=current->right;
     gpa->parent=current;
