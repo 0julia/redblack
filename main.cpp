@@ -18,42 +18,39 @@ Node* rrotate(Node* current, Node*& head);
 
 int main(){
   Node* head=NULL;
-  fstream f("nums.txt");
-  int fnum;
   bool done = false;
-  
+  fstream f("nums.txt");
+  int fnum;  
+
   do{ // keep going till quit
     string input;
-    //cout << "What would you like to do?(add, print, quit) ";//search, delete, print, quit) ";
-    //cin >> input;
+    cout << "What would you like to do?(add, print, quit) ";//search, delete, print, quit) ";
+    cin >> input;
 
-    //if(input == "add"){
+    if(input == "add"){
       //ask input
       cout << "input a number to add please (If you would like to input a file type '0') ";
       int num;
       cin >> num;
       if (num == 0){
-	print(head,0);
-	/*while (f >> fnum){
+	while (f >> fnum){
 	  add(head, head, fnum);
-	  }*/
-	cout <<endl;
+	}
       }else{
 	add(head, head, num);
       }
       if (head != NULL){head->type='b';}//double check that head is black
       //search
-      /*}else if(input == "print"){
+    }else if(input == "print"){
       print(head, 0);
     }else if(input == "quit"){
       //leave
       done=true;
     }else{
       cout<<"Sorry, that was an invalid command" << endl;
-      }*/
-    cout << endl;
+      cout << endl;
+    }
   }while(done==false);
-  
   f.close();
   return 0;
 }
@@ -62,10 +59,8 @@ int main(){
 
 //should it have a return type
 void whichCase(Node* current, Node*& head){
-  if(head==NULL){return;}
-  if(current->parent==NULL){return;}
+  if(!head||!current||!current->parent||!current->parent->parent){return;}
   if(current->parent->type == 'b'){return;}
-  cout << "-2 "<<endl<<endl;
   Node* unc = uncle(current);
   if(unc != NULL && unc->type == 'r'){
     current->parent->type = 'b';
@@ -74,31 +69,22 @@ void whichCase(Node* current, Node*& head){
     current->type = 'r';
     whichCase(current->parent->parent, head);//put at end?
   }else{
-    cout << "-1 "<<endl;
     //if uncle is black or null...
     if(current->parent->data < current->parent->parent->data){ // and left child...
-      cout << "8"<<endl;
       current=lrotate(current, head);//rotate LL or LR
-      cout << "9"<<endl;
-    }
-    if(current->parent->data > current->parent->parent->data){ // and right child...
-      cout << "0 "<<endl<<endl;
+      print(head,0);
+    } else if(current->parent->data > current->parent->parent->data){ // and right child...
       current=rrotate(current, head);//rotate RR or RL
     }
   }
-  cout << "10"<<endl;
   return;
 }
 
 Node* rrotate(Node* current, Node*& head){
-  cout << "1 "<<endl;
   if (!current || !current->parent || !current->parent->parent){cout << "rotate error" << endl; return NULL;}
-  cout << "2 "<<endl;
   Node* temp = current;
   Node* gpa = current->parent->parent;
-  cout << "3 "<<endl;
   if(current->parent==gpa->right && current== current->parent->right){ //right grandchild 
-    cout << "4 "<<endl;
     current=current->parent;
     Node* leftChild = current->left;
     Node* parentPointer = gpa->parent;
@@ -112,10 +98,8 @@ Node* rrotate(Node* current, Node*& head){
 	parentPointer->right=current;
       }
     }
-    
     current->left=gpa;
     gpa->parent=current;
-
     gpa->right=leftChild;//current->left;
     if(leftChild !=NULL){
       leftChild->parent=gpa;
@@ -123,7 +107,6 @@ Node* rrotate(Node* current, Node*& head){
     if(head=gpa){
       head=current;
     }
-    
     char temp = gpa->type;
     gpa->type=current->type;
     current->type=temp;
@@ -144,14 +127,10 @@ Node* rrotate(Node* current, Node*& head){
 }
 
 Node* lrotate(Node* current, Node*& head){
-  cout << "0"<<endl;
   if (!current || !current->parent || !current->parent->parent){cout << "rotate error" << endl; return NULL;}
   Node* temp = current;
   Node* gpa = current->parent->parent;
-  cout << "1"<<endl;
-
   if(current->parent->data > current->data){ //left grandchild 
-    cout << "2"<<endl;
     current=current->parent;
     Node* rightChild = current->right;
     Node* parentPointer = current->parent->parent;
@@ -161,30 +140,25 @@ Node* lrotate(Node* current, Node*& head){
     if (head==gpa){
       head=current;
     }else{
-      parentPointer->left=current;
+      parentPointer->right=current;
     }
-    cout << "3"<<endl;
     gpa->left=current->right;
     gpa->parent=current;
     current->right=gpa;
     char temp = gpa->type;
     gpa->type=current->type;
     current->type=temp;
-    cout << "4"<<endl;
     return current;
   }else{//LR situation
-    cout << "5"<<endl;
     current=temp->parent;
     //set g-pa and parent pointing to each other
     gpa->left=temp;
     temp->parent=gpa;
     //set child and parent pointing to each other
-    cout << "6"<<endl;
     Node* child1 = temp->left;
     temp->left=current;
     current->right=child1;
     current->parent=temp;
-    cout << "7"<<endl;
     return lrotate(current,head);
   }
   return NULL;
@@ -220,7 +194,7 @@ void add(Node*& head, Node* current, int info) {
       current->left->data = info;
       current->left->parent = current;
       whichCase(current->left, head);
-    } else { 
+    } else {
       add(head, current->left, info); // recursive
     }
   } else if (info > current->data) {
