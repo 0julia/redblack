@@ -9,7 +9,8 @@ void add(Node*& head, Node* current, int info);
 void print(Node* head, int depth);
 Node* search(Node* head, int query);
 Node* uncle(Node* current);
-//void del(Node*& head, int info);
+Node* sibling(Node* current);
+void del(Node*& head, int info);
 void allDone(Node* head);
 void whichCase(Node* current, Node*& head);
 Node* lrotate(Node* current, Node*& head);
@@ -24,7 +25,7 @@ int main(){
 
   do{ // keep going till quit
     string input;
-    cout << "What would you like to do?(add, print, quit) ";//search, delete, print, quit) ";
+    cout << "What would you like to do?(add, search, delete, print, quit) ";
     cin >> input;
 
     if(input == "add"){
@@ -41,6 +42,24 @@ int main(){
       }
       if (head != NULL){head->type='b';}//double check that head is black
       //search
+    }else if(input == "search"){
+      int guess;
+      cout << "What number are you looking for? ";
+      cin >> guess;
+      if (search(head, guess)!=NULL){
+	cout << "Number found" <<endl;
+      }
+    }else if(input == "delete"){
+      int guess;
+      cout << "What number are you wanting to remove? ";
+      cin >> guess;
+      if (search(head, guess)!=NULL){
+	cout<<"entering del function" << endl;
+	del(head, guess);
+	cout<<"exiting del function" << endl;
+	cout << head->data;
+      }
+      
     }else if(input == "print"){
       print(head, 0);
     }else if(input == "quit"){
@@ -48,14 +67,43 @@ int main(){
       done=true;
     }else{
       cout<<"Sorry, that was an invalid command" << endl;
-      cout << endl;
     }
+    cout << endl;
+    cout <<"Head: "<< head<<"Left: "<< head->left<<"Right: "<< head->right<<endl;
   }while(done==false);
   f.close();
   return 0;
 }
 
 
+void del(Node*& head, int num){
+  if(!head){return;}
+  if (!head->parent && head->data==num){
+    delete head;
+    head == NULL;
+    return;
+  }
+  //get to right place
+  if (head->data < num){
+    return del(head->right, num);
+  }else if(head->data > num){
+    return del(head->left, num);
+  }
+  cout << "in del function at right place? " << head->data <<endl;
+  if (head->left == NULL && head->right == NULL && head->type == 'r'){
+    cout << "1"<< endl;
+    if(num < head->parent->data){
+      head->parent->left=NULL;
+    }else if(num > head->parent->data){
+      head->parent->right=NULL;
+    }
+    return delete head;
+  }else{
+    cout<<"2" << endl;
+    cout << "not just leaf =("<<endl;
+  }
+  return;
+}
 
 //should it have a return type
 void whichCase(Node* current, Node*& head){
@@ -164,6 +212,19 @@ Node* lrotate(Node* current, Node*& head){
   return NULL;
 }
 
+Node* sibling(Node* current){
+  if (!current){return NULL;}
+  if (!current->parent){return NULL;}
+
+  Node* parent= current->parent;//grandpa
+  if(parent->left==current){
+    return parent->right;
+  }else{
+    return parent->left;
+  }
+  cout << "bug sibling function";
+  return NULL;
+}
 
 Node* uncle(Node* current){
   if (!current){return NULL;}
@@ -178,7 +239,6 @@ Node* uncle(Node* current){
   }
   cout << "bug uncle function";
   return NULL;
-  
 }
 
 void add(Node*& head, Node* current, int info) {
@@ -223,7 +283,7 @@ void allDone(Node* head){
 
 Node* search(Node* head, int query){
   if(!head){//at end of thread and its not there
-    cout << "Sorry, that number is not in the tree";
+    cout << "Sorry, that number is not in the tree" << endl;
     return NULL;
   }
   //if found, return it
@@ -245,6 +305,8 @@ void print(Node* current, int depth){
   if(current == NULL){ //if leaf, end that
     return;
   }
+  cout << "Current: "<< current<<endl;
+  cout <<current->data;
   //print right then middle then left
   print(current->right, depth+1);
   for (int i = 0; i< depth; i++){
