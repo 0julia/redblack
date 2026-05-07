@@ -57,9 +57,9 @@ int main(){
 	cout<<"entering del function" << endl;
 	del(head, guess);
 	cout<<"exiting del function" << endl;
-	cout << head->data;
       }
-      
+      print(head,0);
+      cout << head<<endl;
     }else if(input == "print"){
       print(head, 0);
     }else if(input == "quit"){
@@ -69,7 +69,7 @@ int main(){
       cout<<"Sorry, that was an invalid command" << endl;
     }
     cout << endl;
-    cout <<"Head: "<< head<<"Left: "<< head->left<<"Right: "<< head->right<<endl;
+    //cout <<"Head: "<< head<<" Left: "<< head->left<<"Right: "<< head->right<<endl;
   }while(done==false);
   f.close();
   return 0;
@@ -79,8 +79,9 @@ int main(){
 void del(Node*& head, int num){
   if(!head){return;}
   if (!head->parent && head->data==num){
+    //delete head;
+    //head = NULL;
     delete head;
-    head == NULL;
     return;
   }
   //get to right place
@@ -89,18 +90,24 @@ void del(Node*& head, int num){
   }else if(head->data > num){
     return del(head->left, num);
   }
+  char ogType = head->type;
   cout << "in del function at right place? " << head->data <<endl;
-  if (head->left == NULL && head->right == NULL && head->type == 'r'){
+  if (head->left == NULL && head->right == NULL){// && head->type == 'r'){
     cout << "1"<< endl;
     if(num < head->parent->data){
       head->parent->left=NULL;
     }else if(num > head->parent->data){
       head->parent->right=NULL;
     }
-    return delete head;
-  }else{
-    cout<<"2" << endl;
-    cout << "not just leaf =("<<endl;
+    head=NULL;
+  }else if(!head->left && head->right){
+    head->parent=head->right;
+    head->right->parent= head->parent;
+    delete head; // could I go: head = NULL? why doesnt' that work above?
+  }else if(!head->right && head->left){
+    head->parent=head->left;
+    head->left->parent= head->parent;
+    delete head; // could I go: head = NULL? why doesnt' that work above?
   }
   return;
 }
@@ -305,8 +312,8 @@ void print(Node* current, int depth){
   if(current == NULL){ //if leaf, end that
     return;
   }
-  cout << "Current: "<< current<<endl;
-  cout <<current->data;
+  //cout << "Current: "<< current<<endl;
+  //cout <<"Current Data: " << current->data <<endl;
   //print right then middle then left
   print(current->right, depth+1);
   for (int i = 0; i< depth; i++){
