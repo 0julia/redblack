@@ -15,7 +15,7 @@ void allDone(Node* head);
 void whichCase(Node* current, Node*& head);
 Node* lrotate(Node* current, Node*& head);
 Node* rrotate(Node* current, Node*& head);
-
+void colorFix(Node*& head, char ogColor);
 
 int main(){
   Node* head=NULL;
@@ -76,12 +76,137 @@ int main(){
 }
 
 
-void del(Node*& head, int num){
+void colorFix(Node*& head, char ogColor){
+  if(!head){return;}
+  //if(
+}
+
+Node* nextLargest(Node* head){
+  if (head->left == NULL){
+    return head;
+  }
+  return nextLargest(head->left);
+}
+
+
+
+//void del(Node*& head, int num){
+void del(Node*& head, int info){
+  if(!head){
+    cout << "tree empty";
+    return;
+  }
+  Node* current = search(head, info);
+  if(current == NULL){
+    return;
+  }
+  char ogColor=current->type;
+  
+  //deletes things with no leafs
+  if(current->left == NULL && current->right == NULL){
+    if (current->parent != NULL){
+      if(current->parent->left == current){//left child
+	current->parent->left = NULL;
+      }else if (current->parent->right == current){//right child
+	current->parent->right = NULL;
+      }
+    }else{//if head
+      head = NULL;
+    }
+    
+    delete current;
+    return;
+  }
+
+
+  //deletes things with one leaf (right child)
+  if(current->left == NULL && current->right != NULL){
+    if (current->parent ==NULL){
+      head = current->right;
+      current->right->parent = NULL;
+      delete current;
+      return;
+    }
+
+    if(current->parent->left == current){
+      current->parent->left = current->right;
+    }else{
+      current->parent->right = current->right;
+    }
+    current->right->parent=current->parent;
+    delete current;
+    return;
+  }
+  //deletes thing with only left leaf
+  if(current->left != NULL && current->right == NULL){
+    if (current->parent ==NULL){
+      head = current->left;
+      current->left->parent = NULL;
+      delete current;
+      return;
+    }
+      if(current->parent->right == current){
+      current->parent->right = current->left;
+    }else{
+      current->parent->left = current->left;
+    }
+    current->left->parent=current->parent;
+    delete current;
+    return;
+  }
+
+   //deletes 2 leafs
+  if(current->left != NULL && current->right != NULL){
+    Node* next = nextLargest(current->right);
+    //if next has a right child, need to attach that child to its parent
+    if(next != current->right){//if next biggest isn't hte imediet next one
+      if(next->right != NULL){
+	next->right->parent=next->parent;
+      }
+      if(next->parent->right==next){
+	next->parent->right = next->right;
+      }else{
+	next->parent->left = next->right;
+      }
+    }
+
+    
+    //   print(current, 0);
+
+    if(next != current->right){
+      next->right=current->right;
+      current->right->parent=next;
+    }
+    cout << search(head, 70)->left->parent->data<<endl;
+    //    print(search(head, 70),0);
+    
+    next->left=current->left;
+    current->left->parent = next;
+    next->parent=current->parent;
+    print(next,0);
+    //if the one being replaced is the first thinger
+    if(current->parent==NULL){
+      head=next;
+    }else if(current->type>current->parent->type){
+      current->parent->right=next;
+    }else{
+      current->parent->left=next;
+    }
+    cout <<endl<<"checking: " << endl<<endl;
+    print(current->parent,0);
+    cout << endl<<endl<<"done checking" <<endl;
+    delete current;
+    return;
+  }
+}
+
+ 
+void del2(Node*& head, int num){
   if(!head){return;}
   if (!head->parent && head->data==num){
     //delete head;
-    //head = NULL;
-    delete head;
+    head = NULL;
+    //delete head;
     return;
   }
   //get to right place
